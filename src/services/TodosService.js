@@ -1,4 +1,4 @@
-const Todo = require('../models/Todo');
+import Todo from '../models/Todo';
 
 const service = {
 
@@ -34,4 +34,4 @@ const service = {
   }
 };
 
-module.exports = service;
+export default service;

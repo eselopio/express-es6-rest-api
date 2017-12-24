@@ -1,15 +1,25 @@
 import http from 'http';
 import express from 'express';
 import cors from 'cors';
+import logger from './config/app-logger';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import initializeDb from './db';
 import middleware from './middleware';
-import api from './api';
-import config from './config.json';
+import config from './config/config.dev';
+import todo from './routes/TodoRoute';
+import connectToDb from './db/connectMongo'; 
 
 let app = express();
 app.server = http.createServer(app);
+
+logger.stream = {
+    write: function(message, encoding){
+        logger.info(message);
+    }
+};
+
+//Mongo
+connectToDb();
 
 // logger
 app.use(morgan('dev'));
@@ -23,16 +33,11 @@ app.use(bodyParser.json({
 	limit : config.bodyLimit
 }));
 
-// connect to db
-initializeDb( db => {
-	// internal middleware
-	app.use(middleware({ config, db }));
-	// api router
-	app.use('/api', api({ config, db }));
+//Index route
+app.use('/todo', todo);
 
-	app.server.listen(process.env.PORT || config.port, () => {
-		console.log(`Started on port ${app.server.address().port}`);
-	});
+app.server.listen(process.env.PORT || config.port, () => {
+	logger.info('server started - ', app.server.address().port);
 });
 
 export default app;

@@ -1,6 +1,6 @@
-const db = require('../../config/db');
+import db from '../db/connectMysql';
 
-const Todo = db.define('todo', {
+const Todo = db.define('todos', {
   id: {
     type: db.Sequelize.INTEGER,
     primaryKey: true,
@@ -13,4 +13,4 @@ const Todo = db.define('todo', {
   timestamps: false
 });
 
-module.exports = Todo;
+export default Todo;
